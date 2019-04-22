@@ -55,13 +55,22 @@ dependencies {
     // Spring
     implementation("org.springframework:spring-core:$springVersion")
 
+    // MongoDB
+    implementation("org.springframework.data:spring-data-mongodb:$springDataVersion")
+
     // Kafka
     implementation("org.apache.kafka:kafka_2.12:2.2.0")
+
+    // Google Cloud
+    implementation("com.google.cloud:google-cloud-storage:1.66.0")
+    implementation("com.google.cloud:google-cloud-speech:1.0.0")
 
     // Util
     implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
     implementation("com.fasterxml.uuid:java-uuid-generator:3.1.4")
+    implementation("io.github.microutils:kotlin-logging:1.6.25")
+    implementation("ch.qos.logback:logback-classic:1.2.3")
 
     // Testing
     testImplementation("org.springframework:spring-test:$springVersion")
