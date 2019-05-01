@@ -1,0 +1,19 @@
+{
+  "id": "0647fa50-428e-4c89-9c72-fbbbdc54c312",
+  "audioFileName": "background-noise-low-volume.flac",
+  "clipTime": {
+    "hours": 0,
+    "minutes": 0,
+    "seconds": 39,
+    "tenthsOfSecond": 1
+  },
+  "audioClipName": "39_1",
+  "initialPositionInSeconds": 39.1,
+  "endPositionInSeconds": 43.5,
+  "transcripts": [
+    {
+      "transcript": "por tenernos en tu plan y tu propósito Gloria a nuestro Dios",
+      "confidence": 0.84017175
+    }
+  ]
+}

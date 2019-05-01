@@ -1,0 +1,19 @@
+{
+  "id": "0347fa50-428e-4c89-9c72-fbbbdc54c359",
+  "audioFileName": "strong-background-noise.flac",
+  "clipTime": {
+    "hours": 0,
+    "minutes": 0,
+    "seconds": 11,
+    "tenthsOfSecond": 8
+  },
+  "audioClipName": "11_8",
+  "initialPositionInSeconds": 11.8,
+  "endPositionInSeconds": 24.4,
+  "transcripts": [
+    {
+      "transcript": "I've done it will be my toddler pronounce the greatest military disaster in our long history I thought",
+      "confidence": 0.81741095
+    }
+  ]
+}

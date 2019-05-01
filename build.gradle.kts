@@ -71,6 +71,7 @@ dependencies {
     implementation("com.fasterxml.uuid:java-uuid-generator:3.1.4")
     implementation("io.github.microutils:kotlin-logging:1.6.25")
     implementation("ch.qos.logback:logback-classic:1.2.3")
+    implementation("commons-io:commons-io:2.5")
 
     // Testing
     testImplementation("org.springframework:spring-test:$springVersion")

@@ -1,0 +1,19 @@
+{
+  "id": "0647fa50-428e-4c89-9c72-frbbdc54c359",
+  "audioFileName": "with-applause.flac",
+  "clipTime": {
+    "hours": 0,
+    "minutes": 0,
+    "seconds": 31,
+    "tenthsOfSecond": 3
+  },
+  "audioClipName": "31_3",
+  "initialPositionInSeconds": 31.3,
+  "endPositionInSeconds": 40.9,
+  "transcripts": [
+    {
+      "transcript": "all praise and honor to God for bringing us together here today thank you so much I am I am so grateful to see all of you",
+      "confidence": 0.9420833
+    }
+  ]
+}

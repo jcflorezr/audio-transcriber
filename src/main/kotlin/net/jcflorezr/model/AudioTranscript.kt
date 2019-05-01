@@ -1,11 +1,10 @@
 package net.jcflorezr.model
 
+import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.index.CompoundIndex
 import org.springframework.data.mongodb.core.index.CompoundIndexes
-import org.springframework.data.mongodb.core.index.IndexDirection
-import org.springframework.data.mongodb.core.index.Indexed
-import org.springframework.data.mongodb.core.mapping.DBRef
 import org.springframework.data.mongodb.core.mapping.Document
+import java.util.UUID
 
 data class AudioClipInfo(
     val audioClipName: String,
@@ -19,20 +18,20 @@ data class AudioClipInfo(
     val transactionId: String
 )
 
-@Document
+@Document(collection = "audioTranscripts")
 @CompoundIndexes(
     CompoundIndex(
-        name = "email_age",
-        def = "{'clipTime.hours' : 1, 'clipTime.minutes': 1, 'clipTime.seconds': 1, 'clipTime.tenthsOfSecond': 1}"))
+        name = "audio_transcript_idx",
+        def = "{'audioFileName': 1, 'clipTime.hours' : 1, 'clipTime.minutes': 1, 'clipTime.seconds': 1, 'clipTime.tenthsOfSecond': 1}, { unique: true }"
+    )
+)
 data class AudioTranscript(
-    @Indexed(direction = IndexDirection.ASCENDING)
+    @Id val id: String = UUID.randomUUID().toString(),
     val audioFileName: String,
-    @DBRef
     val clipTime: ClipTime,
-    val clipName: String,
+    val audioClipName: String,
     val initialPositionInSeconds: Float,
     val endPositionInSeconds: Float,
-    @DBRef
     val transcripts: List<Transcript>
 ) {
     constructor(audioClipInfo: AudioClipInfo, transcripts: List<Transcript>) :
@@ -44,22 +43,40 @@ data class AudioTranscript(
                 seconds = audioClipInfo.seconds,
                 tenthsOfSecond = audioClipInfo.tenthsOfSecond
             ),
-            clipName = audioClipInfo.audioClipName,
+            audioClipName = audioClipInfo.audioClipName,
             initialPositionInSeconds = audioClipInfo.initialPositionInSeconds,
             endPositionInSeconds = audioClipInfo.endPositionInSeconds,
             transcripts = transcripts
         )
 }
 
-@Document
 data class ClipTime(
     val hours: Int,
     val minutes: Int,
     val seconds: Int,
     val tenthsOfSecond: Int
-)
+) : Comparable<ClipTime> {
 
-@Document
+    override fun compareTo(other: ClipTime): Int {
+        val hoursComparison = this.hours - other.hours
+        return if (hoursComparison != 0) {
+            hoursComparison
+        } else {
+            val minutesComparison = this.minutes - other.minutes
+            if (minutesComparison != 0) {
+                minutesComparison
+            } else {
+                val secondsComparison = this.seconds - other.seconds
+                if (secondsComparison != 0) {
+                    secondsComparison
+                } else {
+                    this.tenthsOfSecond - other.tenthsOfSecond
+                }
+            }
+        }
+    }
+}
+
 data class Transcript(
     val transcript: String,
     val confidence: Float

@@ -1,0 +1,27 @@
+{
+  "id": "0647fa50-428e-4c89-9c72-fb23dc54c359",
+  "audioFileName": "with-applause.flac",
+  "clipTime": {
+    "hours": 0,
+    "minutes": 0,
+    "seconds": 21,
+    "tenthsOfSecond": 3
+  },
+  "audioClipName": "21_3",
+  "initialPositionInSeconds": 21.3,
+  "endPositionInSeconds": 30.9,
+  "transcripts": [
+    {
+      "transcript": "good",
+      "confidence": 0.94585896
+    },
+    {
+      "transcript": " oh thank you so much",
+      "confidence": 0.9040584
+    },
+    {
+      "transcript": " thank you so much giving",
+      "confidence": 0.9053034
+    }
+  ]
+}

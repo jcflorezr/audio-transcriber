@@ -1,0 +1,19 @@
+{
+  "id": "0647fa50-428e-4c89-9c72-fbbbdc54c359",
+  "audioFileName": "background-noise-low-volume.flac",
+  "clipTime": {
+    "hours": 0,
+    "minutes": 0,
+    "seconds": 13,
+    "tenthsOfSecond": 2
+  },
+  "audioClipName": "13_2",
+  "initialPositionInSeconds": 13.2,
+  "endPositionInSeconds": 27.9,
+  "transcripts": [
+    {
+      "transcript": "perdí una licitación perdido un negocio una persona me quitó el cliente en la vida espiritual en la vida material y muchas decepciones pero en la vida espiritual en la vida",
+      "confidence": 0.88507885
+    }
+  ]
+}

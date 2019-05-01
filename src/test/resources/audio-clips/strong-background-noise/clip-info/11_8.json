@@ -1,0 +1,11 @@
+{
+  "audioFileName": "strong-background-noise.flac",
+  "audioClipName": "11_8",
+  "hours": 0,
+  "minutes": 0,
+  "seconds": 11,
+  "tenthsOfSecond": 8,
+  "initialPositionInSeconds": 11.8,
+  "endPositionInSeconds": 24.4,
+  "transactionId": "any-transaction-id"
+}

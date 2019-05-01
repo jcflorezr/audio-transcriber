@@ -1,0 +1,11 @@
+{
+  "audioFileName": "background-noise-low-volume.flac",
+  "audioClipName": "39_1",
+  "hours": 0,
+  "minutes": 0,
+  "seconds": 39,
+  "tenthsOfSecond": 1,
+  "initialPositionInSeconds": 39.1,
+  "endPositionInSeconds": 43.5,
+  "transactionId": "any-transaction-id"
+}

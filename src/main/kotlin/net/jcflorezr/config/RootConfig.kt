@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Import
 import org.springframework.context.annotation.PropertySource
 
 @Configuration
-@PropertySource(value = ["classpath:net.jcflorezr.config/files-config.properties"])
+@PropertySource(value = ["classpath:config/files-config.properties"])
 @Import(value = [MongoConfig::class])
 class RootConfig {
 

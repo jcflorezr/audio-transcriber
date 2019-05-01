@@ -1,0 +1,19 @@
+{
+  "id": "0647fa50-428e-4c89-9c72-fbbbdc54c623",
+  "audioFileName": "strong-background-noise.flac",
+  "clipTime": {
+    "hours": 0,
+    "minutes": 0,
+    "seconds": 0,
+    "tenthsOfSecond": 0
+  },
+  "audioClipName": "0_0",
+  "initialPositionInSeconds": 0.0,
+  "endPositionInSeconds": 11.9,
+  "transcripts": [
+    {
+      "transcript": "20 week ago today it's the Speaker of the House to fix this afternoon and they gave him her station",
+      "confidence": 0.8813749
+    }
+  ]
+}

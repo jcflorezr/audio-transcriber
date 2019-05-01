@@ -1,0 +1,19 @@
+{
+  "id": "0647fa50-428e-4c89-9c72-fbbbdc54c332",
+  "audioFileName": "background-noise-low-volume.flac",
+  "clipTime": {
+    "hours": 0,
+    "minutes": 0,
+    "seconds": 27,
+    "tenthsOfSecond": 8
+  },
+  "audioClipName": "27_8",
+  "initialPositionInSeconds": 27.8,
+  "endPositionInSeconds": 39.2,
+  "transcripts": [
+    {
+      "transcript": "triunfos sólo éxitos más nos decepcionamos del señor jamás podremos decir una palabra mala lo único que nosotros podemos decirle al señor",
+      "confidence": 0.9280306
+    }
+  ]
+}

@@ -10,6 +10,7 @@ import com.google.protobuf.ByteString
 import net.jcflorezr.exception.SourceAudioFileValidationException
 import net.jcflorezr.model.Transcript
 import mu.KotlinLogging
+import net.jcflorezr.model.AudioClipInfo
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import java.io.File
@@ -26,12 +27,14 @@ class CloudSpeechClientImpl : CloudSpeechClient {
 
     companion object {
         private const val COLOMBIAN_SPANISH = "es-CO"
+        private const val US_ENGLISH = "en-US"
+        private const val UK_ENGLISH = "en-UK"
     }
 
     override fun getAudioTranscripts(audioFile: File): List<Transcript> {
         SpeechClient.create().use { speechClient ->
             val audioBytes = ByteString.copyFrom(audioFile.readBytes())
-            val config = RecognitionConfig.newBuilder().setLanguageCode(COLOMBIAN_SPANISH).build()
+            val config = RecognitionConfig.newBuilder().setLanguageCode(UK_ENGLISH).build()
             val audio = RecognitionAudio.newBuilder().setContent(audioBytes).build()
             return speechClient.recognize(config, audio).resultsList
                 .flatMap { it.alternativesList }
@@ -41,15 +44,15 @@ class CloudSpeechClientImpl : CloudSpeechClient {
 }
 
 interface BucketClient {
-    fun downloadSourceFileFromBucket(audioFileName: String): File
+    fun downloadSourceFileFromBucket(audioClipInfo: AudioClipInfo): File
 }
 
 @Service
 final class BucketClientImpl : BucketClient {
 
-    @Value("\${files-net.jcflorezr.config.bucket-name}")
+    @Value("\${files-config.bucket-name}")
     private lateinit var bucketName: String
-    @Value("\${files-net.jcflorezr.config.bucket-directory}")
+    @Value("\${files-config.bucket-directory}")
     private lateinit var bucketDirectory: String
 
     private val thisClass: Class<BucketClientImpl> = this.javaClass
@@ -64,13 +67,14 @@ final class BucketClientImpl : BucketClient {
         tempDirectory = thisClass.getResource("/temp-converted-files").path
     }
 
-    override fun downloadSourceFileFromBucket(audioFileName: String): File {
+    override fun downloadSourceFileFromBucket(audioClipInfo: AudioClipInfo): File {
         // TODO: give the right log message
-        logger.info { "[1][entry-point] Downloading source audio file: ($audioFileName) from bucket" }
-        val blobId = BlobId.of(bucketName, "$bucketDirectory/$audioFileName")
+        val audioClipLocation = audioClipInfo.run { "$bucketDirectory/$audioFileName/$transactionId/$audioClipName" }
+        logger.info { "[1][entry-point] Downloading source audio file: ($audioClipLocation) from bucket" }
+        val blobId = BlobId.of(bucketName, audioClipLocation)
         val blob = bucketInstance.get(blobId)
-            ?: throw SourceAudioFileValidationException.audioFileDoesNotExistInBucket(audioFileName)
-        val downloadedFilePath = "$tempDirectory/$audioFileName"
+            ?: throw SourceAudioFileValidationException.audioFileDoesNotExistInBucket(audioClipLocation)
+        val downloadedFilePath = audioClipInfo.run { "$tempDirectory/$audioFileName/$transactionId/$audioClipName" }
         blob.downloadTo(Paths.get(downloadedFilePath))
         return File(downloadedFilePath)
     }

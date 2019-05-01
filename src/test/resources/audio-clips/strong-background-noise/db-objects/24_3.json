@@ -1,0 +1,19 @@
+{
+  "id": "0647fa50-4232-4c89-9c72-fbbbdc54c359",
+  "audioFileName": "strong-background-noise.flac",
+  "clipTime": {
+    "hours": 0,
+    "minutes": 0,
+    "seconds": 24,
+    "tenthsOfSecond": 3
+  },
+  "audioClipName": "24_3",
+  "initialPositionInSeconds": 24.3,
+  "endPositionInSeconds": 40.8,
+  "transcripts": [
+    {
+      "transcript": "and some good gaggia diseases need address 20 or 30090 wheel back and certainly feel so depressed and lonely British expeditionary Force",
+      "confidence": 0.8609603
+    }
+  ]
+}

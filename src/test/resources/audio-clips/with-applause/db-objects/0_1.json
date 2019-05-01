@@ -1,0 +1,14 @@
+{
+  "id": "0647fa50-428e-4c45-9c72-fbbbdc54c359",
+  "audioFileName": "with-applause.flac",
+  "clipTime": {
+    "hours": 0,
+    "minutes": 0,
+    "seconds": 0,
+    "tenthsOfSecond": 1
+  },
+  "audioClipName": "0_1",
+  "initialPositionInSeconds": 0.1,
+  "endPositionInSeconds": 20.9,
+  "transcripts": []
+}

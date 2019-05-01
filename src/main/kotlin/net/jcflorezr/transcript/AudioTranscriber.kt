@@ -7,6 +7,7 @@ import net.jcflorezr.model.AudioClipInfo
 import net.jcflorezr.model.AudioTranscript
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import java.io.File
 
 interface AudioTranscriber {
     fun transcriptAudio(audioClipInfo: AudioClipInfo)
@@ -23,9 +24,14 @@ class AudioTranscriberImpl : AudioTranscriber {
     private lateinit var speechClient: CloudSpeechClient
 
     override fun transcriptAudio(audioClipInfo: AudioClipInfo) {
-        val audioToTranscript = bucketClient.downloadSourceFileFromBucket(audioClipInfo.audioFileName)
-        val audioTranscripts = speechClient.getAudioTranscripts(audioFile = audioToTranscript)
-        audioTranscriptDao.saveAudioClipInfo(AudioTranscript(audioClipInfo, audioTranscripts))
+        var audioToTranscript: File? = null
+        try {
+            audioToTranscript = bucketClient.downloadSourceFileFromBucket(audioClipInfo)
+            val audioTranscripts = speechClient.getAudioTranscripts(audioFile = audioToTranscript)
+            audioTranscriptDao.saveAudioTranscript(AudioTranscript(audioClipInfo, audioTranscripts))
+        } finally {
+            audioToTranscript?.delete()
+        }
     }
 
 }

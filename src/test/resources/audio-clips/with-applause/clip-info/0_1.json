@@ -1,0 +1,11 @@
+{
+  "audioFileName": "with-applause.flac",
+  "audioClipName": "0_1",
+  "hours": 0,
+  "minutes": 0,
+  "seconds": 0,
+  "tenthsOfSecond": 1,
+  "initialPositionInSeconds": 0.1,
+  "endPositionInSeconds": 20.9,
+  "transactionId": "any-transaction-id"
+}
