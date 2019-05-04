@@ -24,5 +24,4 @@ class RootConfig {
     @Bean fun bucketClient() = BucketClientImpl()
 
     @Bean fun cloudSpeechClient() = CloudSpeechClientImpl()
-
 }

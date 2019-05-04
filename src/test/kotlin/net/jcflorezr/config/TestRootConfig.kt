@@ -25,5 +25,4 @@ class TestRootConfig {
     @Bean @Profile("test") fun bucketClient(): BucketClient = mock(BucketClient::class.java)
 
     @Bean @Profile("test") fun cloudSpeechClient(): CloudSpeechClient = mock(CloudSpeechClient::class.java)
-
 }

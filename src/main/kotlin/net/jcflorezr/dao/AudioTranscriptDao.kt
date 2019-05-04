@@ -11,9 +11,10 @@ import org.springframework.data.mongodb.core.query.Query
 import org.springframework.stereotype.Repository
 
 interface AudioTranscriptDao {
-    fun saveAudioTranscript(audioTranscript: AudioTranscript)
+    fun saveAudioTranscript(audioTranscript: AudioTranscript, transactionId: String)
     fun getAudioTranscripts(audioFileName: String): List<AudioTranscript>
     fun getAudioTranscript(audioFileName: String, audioClipName: String): AudioTranscript?
+    fun dropCollection()
 }
 
 @Repository
@@ -24,7 +25,11 @@ class AudioTranscriptDaoImpl : AudioTranscriptDao {
 
     private val logger = KotlinLogging.logger { }
 
-    override fun saveAudioTranscript(audioTranscript: AudioTranscript) {
+    override fun saveAudioTranscript(audioTranscript: AudioTranscript, transactionId: String) {
+        logger.info {
+            "[$transactionId][${audioTranscript.audioFileName}] " +
+            "Storing transcription for Audio Clip '${audioTranscript.audioClipName}'."
+        }
         try {
             mongoTemplate.insert(audioTranscript)
         } catch (ex: DuplicateKeyException) {
@@ -55,5 +60,9 @@ class AudioTranscriptDaoImpl : AudioTranscriptDao {
             .and("audioClipName").`is`(audioClipName)
         )
         return mongoTemplate.query(AudioTranscript::class.java).matching(query).oneValue()
+    }
+
+    override fun dropCollection() {
+        mongoTemplate.dropCollection(AudioTranscript::class.java)
     }
 }

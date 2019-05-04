@@ -17,9 +17,8 @@ import java.io.File
 import java.nio.file.Paths
 import javax.annotation.PostConstruct
 
-
 interface CloudSpeechClient {
-    fun getAudioTranscripts(audioFile: File): List<Transcript>
+    fun getAudioTranscripts(audioFile: File, audioClipInfo: AudioClipInfo): List<Transcript>
 }
 
 @Service
@@ -31,10 +30,16 @@ class CloudSpeechClientImpl : CloudSpeechClient {
         private const val UK_ENGLISH = "en-UK"
     }
 
-    override fun getAudioTranscripts(audioFile: File): List<Transcript> {
+    private val logger = KotlinLogging.logger { }
+
+    override fun getAudioTranscripts(audioFile: File, audioClipInfo: AudioClipInfo): List<Transcript> {
+        logger.info {
+            "[${audioClipInfo.transactionId}][${audioClipInfo.audioFileName}] " +
+            "Retrieving transcript for Audio Clip '${audioClipInfo.audioClipName}'"
+        }
         SpeechClient.create().use { speechClient ->
             val audioBytes = ByteString.copyFrom(audioFile.readBytes())
-            val config = RecognitionConfig.newBuilder().setLanguageCode(UK_ENGLISH).build()
+            val config = RecognitionConfig.newBuilder().setLanguageCode(COLOMBIAN_SPANISH).build()
             val audio = RecognitionAudio.newBuilder().setContent(audioBytes).build()
             return speechClient.recognize(config, audio).resultsList
                 .flatMap { it.alternativesList }
@@ -68,9 +73,11 @@ final class BucketClientImpl : BucketClient {
     }
 
     override fun downloadSourceFileFromBucket(audioClipInfo: AudioClipInfo): File {
-        // TODO: give the right log message
         val audioClipLocation = audioClipInfo.run { "$bucketDirectory/$audioFileName/$transactionId/$audioClipName" }
-        logger.info { "[1][entry-point] Downloading source audio file: ($audioClipLocation) from bucket" }
+        logger.info {
+            "[${audioClipInfo.transactionId}][${audioClipInfo.audioFileName}] " +
+            "Downloading source audio file ($audioClipLocation) from bucket"
+        }
         val blobId = BlobId.of(bucketName, audioClipLocation)
         val blob = bucketInstance.get(blobId)
             ?: throw SourceAudioFileValidationException.audioFileDoesNotExistInBucket(audioClipLocation)

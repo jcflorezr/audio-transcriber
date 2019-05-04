@@ -65,7 +65,10 @@ class AudioTranscriberConsumerImpl : AudioTranscriberConsumer {
             }
             consumerRecords.forEach { record ->
                 val audioClipInfo = record.value()
-                logger.info { "[${audioClipInfo.transactionId}][1][audio-clip] Receiving audio clip info to get access to the audio clip." }
+                logger.info {
+                    "[${audioClipInfo.transactionId}][${audioClipInfo.audioFileName}]" +
+                    "Audio Clip '${audioClipInfo.audioClipName}' has arrived."
+                }
                 audioTranscriber.transcriptAudio(audioClipInfo)
             }
             consumer.commitAsync()
@@ -85,7 +88,6 @@ class AudioTranscriberConsumerImpl : AudioTranscriberConsumer {
         consumer.subscribe(listOf(topicName))
         return consumer
     }
-
 }
 
 class AudioClipInfoDeserializer : Deserializer<AudioClipInfo> {

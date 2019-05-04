@@ -1,5 +1,6 @@
 package net.jcflorezr.transcript
 
+import mu.KotlinLogging
 import net.jcflorezr.cloud.BucketClient
 import net.jcflorezr.cloud.CloudSpeechClient
 import net.jcflorezr.dao.AudioTranscriptDao
@@ -23,15 +24,23 @@ class AudioTranscriberImpl : AudioTranscriber {
     @Autowired
     private lateinit var speechClient: CloudSpeechClient
 
+    private val logger = KotlinLogging.logger { }
+
     override fun transcriptAudio(audioClipInfo: AudioClipInfo) {
         var audioToTranscript: File? = null
         try {
+            logger.info {
+                "[${audioClipInfo.transactionId}][${audioClipInfo.audioFileName}] " +
+                "Transcription for Audio Clip '${audioClipInfo.audioClipName}' has started."
+            }
             audioToTranscript = bucketClient.downloadSourceFileFromBucket(audioClipInfo)
-            val audioTranscripts = speechClient.getAudioTranscripts(audioFile = audioToTranscript)
-            audioTranscriptDao.saveAudioTranscript(AudioTranscript(audioClipInfo, audioTranscripts))
+            val audioTranscripts = speechClient.getAudioTranscripts(audioFile = audioToTranscript, audioClipInfo = audioClipInfo)
+            audioTranscriptDao.saveAudioTranscript(
+                audioTranscript = AudioTranscript(audioClipInfo, audioTranscripts),
+                transactionId = audioClipInfo.transactionId
+            )
         } finally {
             audioToTranscript?.delete()
         }
     }
-
 }

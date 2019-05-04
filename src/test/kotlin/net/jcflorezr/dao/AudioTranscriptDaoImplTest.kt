@@ -11,6 +11,7 @@ import org.junit.ClassRule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
@@ -20,6 +21,7 @@ import java.util.UUID
 @ActiveProfiles("test")
 @RunWith(SpringJUnit4ClassRunner::class)
 @ContextConfiguration(classes = [TestAudioTranscriptDaoConfig::class])
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class AudioTranscriptDaoImplTest {
 
     private val thisClass: Class<AudioTranscriptDaoImplTest> = this.javaClass
@@ -33,6 +35,7 @@ class AudioTranscriptDaoImplTest {
         @ClassRule
         val mongoInitializer = TestMongoInitializer()
         private const val backgroundNoiseLowVolume = "background-noise-low-volume"
+        private const val mockTransactionId = "any-transaction-id"
     }
 
     init {
@@ -44,7 +47,7 @@ class AudioTranscriptDaoImplTest {
         File("$audioClipsResourcesPath/$backgroundNoiseLowVolume/db-objects/").listFiles()
         .map { JsonUtils.MAPPER.readValue(it, AudioTranscript::class.java) }
         .forEach { expectedTranscript ->
-            audioTranscriptDao.saveAudioTranscript(audioTranscript = expectedTranscript)
+            audioTranscriptDao.saveAudioTranscript(audioTranscript = expectedTranscript, transactionId = mockTransactionId)
             val actualTranscript = audioTranscriptDao.getAudioTranscript(
                 audioFileName = expectedTranscript.audioFileName,
                 audioClipName = expectedTranscript.audioClipName
@@ -59,6 +62,7 @@ class AudioTranscriptDaoImplTest {
             }
             assertTrue(audioTranscript.clipTime < audioTranscripts[index + 1].clipTime)
         }
+        audioTranscriptDao.dropCollection()
     }
 
     @Test
@@ -67,10 +71,14 @@ class AudioTranscriptDaoImplTest {
             .let { JsonUtils.MAPPER.readValue(it, AudioTranscript::class.java) }
         val transcript2 = File("$audioClipsResourcesPath/$backgroundNoiseLowVolume/db-objects/13_2.json")
             .let { JsonUtils.MAPPER.readValue(it, AudioTranscript::class.java) }
-        audioTranscriptDao.saveAudioTranscript(audioTranscript = transcript2)
-        audioTranscriptDao.saveAudioTranscript(audioTranscript = transcript1)
-        audioTranscriptDao.saveAudioTranscript(audioTranscript = transcript1.copy(id = UUID.randomUUID().toString()))
-        audioTranscriptDao.saveAudioTranscript(audioTranscript = transcript2.copy(id = UUID.randomUUID().toString()))
+        audioTranscriptDao.saveAudioTranscript(audioTranscript = transcript2, transactionId = mockTransactionId)
+        audioTranscriptDao.saveAudioTranscript(audioTranscript = transcript1, transactionId = mockTransactionId)
+        audioTranscriptDao.saveAudioTranscript(
+            audioTranscript = transcript1.copy(id = UUID.randomUUID().toString()), transactionId = mockTransactionId
+        )
+        audioTranscriptDao.saveAudioTranscript(
+            audioTranscript = transcript2.copy(id = UUID.randomUUID().toString()), transactionId = mockTransactionId
+        )
         val audioTranscripts = audioTranscriptDao.getAudioTranscripts(audioFileName = "$backgroundNoiseLowVolume.flac")
         assertThat(audioTranscripts.size, Is(equalTo(2)))
         audioTranscripts.forEachIndexed { index, audioTranscript ->
@@ -79,6 +87,6 @@ class AudioTranscriptDaoImplTest {
             }
             assertTrue(audioTranscript.clipTime < audioTranscripts[index + 1].clipTime)
         }
+        audioTranscriptDao.dropCollection()
     }
-
 }
