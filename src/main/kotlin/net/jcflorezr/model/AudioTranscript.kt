@@ -22,7 +22,8 @@ data class AudioClipInfo(
 @CompoundIndexes(
     CompoundIndex(
         name = "audio_transcript_idx",
-        def = "{'audioFileName': 1, 'clipTime.hours' : 1, 'clipTime.minutes': 1, 'clipTime.seconds': 1, 'clipTime.tenthsOfSecond': 1}, { unique: true }"
+        def = "{'audioFileName': 1, 'clipTime.hours' : 1, 'clipTime.minutes': 1, 'clipTime.seconds': 1, 'clipTime.tenthsOfSecond': 1}",
+        unique = true
     )
 )
 data class AudioTranscript(

@@ -15,6 +15,7 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 import java.io.File
+import java.util.UUID
 
 @ActiveProfiles("test")
 @RunWith(SpringJUnit4ClassRunner::class)
@@ -52,6 +53,26 @@ class AudioTranscriptDaoImplTest {
         }
         val audioTranscripts = audioTranscriptDao.getAudioTranscripts(audioFileName = "$backgroundNoiseLowVolume.flac")
         assertThat(audioTranscripts.size, Is(equalTo(4)))
+        audioTranscripts.forEachIndexed { index, audioTranscript ->
+            if (index == audioTranscripts.size - 1) {
+                return@forEachIndexed
+            }
+            assertTrue(audioTranscript.clipTime < audioTranscripts[index + 1].clipTime)
+        }
+    }
+
+    @Test
+    fun storeDuplicateAudioTranscripts() {
+        val transcript1 = File("$audioClipsResourcesPath/$backgroundNoiseLowVolume/db-objects/0_2.json")
+            .let { JsonUtils.MAPPER.readValue(it, AudioTranscript::class.java) }
+        val transcript2 = File("$audioClipsResourcesPath/$backgroundNoiseLowVolume/db-objects/13_2.json")
+            .let { JsonUtils.MAPPER.readValue(it, AudioTranscript::class.java) }
+        audioTranscriptDao.saveAudioTranscript(audioTranscript = transcript2)
+        audioTranscriptDao.saveAudioTranscript(audioTranscript = transcript1)
+        audioTranscriptDao.saveAudioTranscript(audioTranscript = transcript1.copy(id = UUID.randomUUID().toString()))
+        audioTranscriptDao.saveAudioTranscript(audioTranscript = transcript2.copy(id = UUID.randomUUID().toString()))
+        val audioTranscripts = audioTranscriptDao.getAudioTranscripts(audioFileName = "$backgroundNoiseLowVolume.flac")
+        assertThat(audioTranscripts.size, Is(equalTo(2)))
         audioTranscripts.forEachIndexed { index, audioTranscript ->
             if (index == audioTranscripts.size - 1) {
                 return@forEachIndexed
