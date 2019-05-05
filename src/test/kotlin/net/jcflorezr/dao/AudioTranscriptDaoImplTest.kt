@@ -56,11 +56,9 @@ class AudioTranscriptDaoImplTest {
         }
         val audioTranscripts = audioTranscriptDao.getAudioTranscripts(audioFileName = "$backgroundNoiseLowVolume.flac")
         assertThat(audioTranscripts.size, Is(equalTo(4)))
-        audioTranscripts.forEachIndexed { index, audioTranscript ->
-            if (index == audioTranscripts.size - 1) {
-                return@forEachIndexed
-            }
-            assertTrue(audioTranscript.clipTime < audioTranscripts[index + 1].clipTime)
+        audioTranscripts.reduce { transcript1, transcript2 ->
+            assertTrue(transcript1.clipTime < transcript2.clipTime)
+            transcript2
         }
         audioTranscriptDao.dropCollection()
     }
@@ -81,11 +79,9 @@ class AudioTranscriptDaoImplTest {
         )
         val audioTranscripts = audioTranscriptDao.getAudioTranscripts(audioFileName = "$backgroundNoiseLowVolume.flac")
         assertThat(audioTranscripts.size, Is(equalTo(2)))
-        audioTranscripts.forEachIndexed { index, audioTranscript ->
-            if (index == audioTranscripts.size - 1) {
-                return@forEachIndexed
-            }
-            assertTrue(audioTranscript.clipTime < audioTranscripts[index + 1].clipTime)
+        audioTranscripts.reduce { audioTranscript1, audioTranscript2 ->
+            assertTrue(audioTranscript1.clipTime < audioTranscript2.clipTime)
+            audioTranscript2
         }
         audioTranscriptDao.dropCollection()
     }

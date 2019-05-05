@@ -2,10 +2,15 @@ package net.jcflorezr.transcript
 
 import net.jcflorezr.cloud.BucketClient
 import net.jcflorezr.config.TestRootConfig
+import net.jcflorezr.dao.AudioTranscriptDao
 import net.jcflorezr.dao.TestMongoInitializer
 import net.jcflorezr.model.AudioClipInfo
 import net.jcflorezr.util.JsonUtils
 import org.apache.commons.io.FileUtils
+import org.hamcrest.CoreMatchers.equalTo
+import org.hamcrest.CoreMatchers.`is` as Is
+import org.hamcrest.MatcherAssert
+import org.junit.Assert.assertTrue
 import org.junit.ClassRule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -27,6 +32,8 @@ class AudioTranscriberImplTest {
     private lateinit var bucketClient: BucketClient
     @Autowired
     private lateinit var audioTranscriber: AudioTranscriber
+    @Autowired
+    private lateinit var audioTranscriptDao: AudioTranscriptDao
 
     private val thisClass: Class<AudioTranscriberImplTest> = this.javaClass
     private val tempConvertedFilesPath: String
@@ -75,9 +82,15 @@ class AudioTranscriberImplTest {
         .forEach { audioClipInfo ->
             val tempAudioClip = tempAudioClips.find { it.nameWithoutExtension == audioClipInfo.audioClipName }
                 ?: throw AssertionError("No temp audio clip was created for ${audioClipInfo.audioClipName}")
-            When(bucketClient.downloadSourceFileFromBucket(audioClipInfo))
-                .thenReturn(tempAudioClip)
+            When(bucketClient.downloadSourceFileFromBucket(audioClipInfo)).thenReturn(tempAudioClip)
             audioTranscriber.transcriptAudio(audioClipInfo)
         }
+        val audioTranscripts = audioTranscriptDao.getAudioTranscripts(audioFileName = "$audioFileName.flac")
+        MatcherAssert.assertThat(audioTranscripts.size, Is(equalTo(tempAudioClips.size)))
+        audioTranscripts.reduce { transcript1, transcript2 ->
+            assertTrue(transcript1.clipTime < transcript2.clipTime)
+            transcript2
+        }
+        audioTranscriptDao.dropCollection()
     }
 }
